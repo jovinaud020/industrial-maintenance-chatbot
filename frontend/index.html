@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Industrial Maintenance AI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         AUTHENTICATION PAGE
+    ====================================================== -->
+
+    <div id="authPage" class="auth-page">
+
+        <div class="auth-card">
+
+            <div class="brand">
+                <div class="brand-icon">⚙</div>
+
+                <div>
+                    <h1>Industrial Maintenance AI</h1>
+                    <p>Knowledge Assistant</p>
+                </div>
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <div id="loginForm">
+
+                <h2>Welcome back</h2>
+
+                <p class="auth-description">
+                    Sign in to access the industrial maintenance
+                    knowledge assistant.
+                </p>
+
+                <label>Username</label>
+
+                <input
+                    type="text"
+                    id="loginUsername"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                >
+
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                >
+
+
+                <button
+                    class="primary-button"
+                    onclick="loginUser()"
+                >
+                    Sign in
+                </button>
+
+
+                <p id="loginError" class="error-message"></p>
+
+
+                <p class="switch-auth">
+
+                    Don't have an account?
+
+                    <button
+                        class="text-button"
+                        onclick="showRegister()"
+                    >
+                        Create account
+                    </button>
+
+                </p>
+
+            </div>
+
+
+            <!-- REGISTER -->
+
+            <div id="registerForm" class="hidden">
+
+                <h2>Create account</h2>
+
+                <p class="auth-description">
+                    Create your account to start using the
+                    maintenance knowledge assistant.
+                </p>
+
+
+                <label>Username</label>
+
+                <input
+                    type="text"
+                    id="registerUsername"
+                    placeholder="Choose a username"
+                >
+
+
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    id="registerEmail"
+                    placeholder="Enter your email"
+                >
+
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    id="registerPassword"
+                    placeholder="Minimum 6 characters"
+                >
+
+
+                <button
+                    class="primary-button"
+                    onclick="registerUser()"
+                >
+                    Create account
+                </button>
+
+
+                <p id="registerError" class="error-message"></p>
+
+                <p id="registerSuccess" class="success-message"></p>
+
+
+                <p class="switch-auth">
+
+                    Already have an account?
+
+                    <button
+                        class="text-button"
+                        onclick="showLogin()"
+                    >
+                        Sign in
+                    </button>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CHAT PAGE
+    ====================================================== -->
+
+    <div id="chatPage" class="chat-page hidden">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-header">
+
+                <div class="sidebar-brand">
+                    <div class="small-brand-icon">⚙</div>
+
+                    <span>
+                        Maintenance AI
+                    </span>
+                </div>
+
+            </div>
+
+
+            <button
+                class="new-chat-button"
+                onclick="newChat()"
+            >
+                + New Chat
+            </button>
+
+
+            <div class="sidebar-section">
+
+                <p class="section-title">
+                    Recent chats
+                </p>
+
+                <div id="chatHistory"></div>
+
+            </div>
+
+
+            <div class="sidebar-bottom">
+
+                <button onclick="toggleTheme()">
+                    <span id="themeIcon">🌙</span>
+                    <span id="themeText">Dark mode</span>
+                </button>
+
+
+                <button onclick="logoutUser()">
+                    🚪
+                    <span>Logout</span>
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CHAT -->
+
+        <main class="main-chat">
+
+            <!-- TOP BAR -->
+
+            <header class="chat-header">
+
+                <div>
+
+                    <h2>
+                        Industrial Maintenance Assistant
+                    </h2>
+
+                </div>
+
+
+                <div class="user-area">
+
+                    <span id="currentUsername">
+                        User
+                    </span>
+
+                    <div class="user-avatar">
+                        U
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- MESSAGES -->
+
+            <section
+                id="messages"
+                class="messages"
+            >
+
+                <div class="welcome-message">
+
+                    <div class="welcome-icon">
+                        ⚙
+                    </div>
+
+                    <h1>
+                        How can I help with
+                        industrial maintenance?
+                    </h1>
+
+                    <p>
+                        Ask questions about bearings,
+                        motors, pumps, lubrication,
+                        hydraulics and machine safety.
+                    </p>
+
+                    <div class="suggestions">
+
+                        <button
+                            onclick="useSuggestion('What are the common causes of bearing failure?')"
+                        >
+                            Bearing failure causes
+                        </button>
+
+                        <button
+                            onclick="useSuggestion('What are common motor maintenance procedures?')"
+                        >
+                            Motor maintenance
+                        </button>
+
+                        <button
+                            onclick="useSuggestion('What causes hydraulic system contamination?')"
+                        >
+                            Hydraulic contamination
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INPUT AREA -->
+
+            <div class="input-area">
+
+                <div class="input-container">
+
+                    <textarea
+                        id="messageInput"
+                        rows="1"
+                        placeholder="Ask an industrial maintenance question..."
+                        onkeydown="handleInputKey(event)"
+                    ></textarea>
+
+
+                    <button
+                        id="sendButton"
+                        onclick="sendMessage()"
+                        title="Send message"
+                    >
+                        ➤
+                    </button>
+
+                </div>
+
+
+                <div class="input-info">
+
+                    <span>
+                        AI answers are based on the
+                        industrial maintenance knowledge base.
+                    </span>
+
+                    <span id="languageIndicator">
+                        Auto language detection
+                    </span>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer class="site-footer">
+    <span>
+        Made by <strong>Jovin</strong>
+    </span>
+
+    <span class="footer-divider">•</span>
+
+    <a
+        href="https://wa.me/255615271095"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        WhatsApp: +255 615 271 095
+    </a>
+
+</footer>
+
+
+    <script src="script.js">
+        
+    </script>
+    
+</body>
+
+</html>
