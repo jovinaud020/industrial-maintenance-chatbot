@@ -31,7 +31,7 @@ client = chromadb.PersistentClient(
 # COLLECTION
 # =====================================================
 
-collection = client.get_collection(
+collection = client.get_or_create_collection(
     name="industrial_maintenance"
 )
 
@@ -63,16 +63,29 @@ def retrieve_documents(
     # -------------------------------------------------
     # RETRIEVE MORE CANDIDATES
     # -------------------------------------------------
-    #
-    # Retrieve more candidates internally than the number
-    # finally requested. This gives the system a better
-    # chance of finding useful technical information.
-    #
 
     candidate_k = max(
         top_k * 2,
         10
     )
+
+    # -------------------------------------------------
+    # CHECK IF COLLECTION HAS DOCUMENTS
+    # -------------------------------------------------
+
+    collection_count = collection.count()
+
+    if collection_count == 0:
+        return []
+
+    candidate_k = min(
+        candidate_k,
+        collection_count
+    )
+
+    # -------------------------------------------------
+    # QUERY CHROMADB
+    # -------------------------------------------------
 
     results = collection.query(
         query_embeddings=[query_embedding],
@@ -138,9 +151,6 @@ def retrieve_documents(
     # -------------------------------------------------
     # SORT BY RELEVANCE
     # -------------------------------------------------
-    #
-    # Lower distance means greater similarity.
-    #
 
     retrieved.sort(
         key=lambda item: item.get(
