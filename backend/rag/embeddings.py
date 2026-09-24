@@ -1,51 +1,40 @@
 from sentence_transformers import SentenceTransformer
 
 
-# ============================================================
-# MULTILINGUAL EMBEDDING MODEL
-# ============================================================
-
 MODEL_NAME = (
     "sentence-transformers/"
     "paraphrase-multilingual-MiniLM-L12-v2"
 )
 
 
-# ============================================================
-# EMBEDDING FUNCTION
-# ============================================================
-
 class MultilingualEmbeddingFunction:
 
     def __init__(self):
 
-        print(
-            "Loading multilingual embedding model..."
-        )
+        self.model = None
 
-        self.model = SentenceTransformer(
-            MODEL_NAME
-        )
+    def _load_model(self):
 
-        print(
-            "Embedding model loaded successfully."
-        )
+        if self.model is None:
 
-    # ========================================================
-    # CHROMADB EMBEDDING FUNCTION NAME
-    # ========================================================
+            print("Loading multilingual embedding model...")
+
+            self.model = SentenceTransformer(
+                MODEL_NAME,
+                device="cpu"
+            )
+
+            print(
+                "Embedding model loaded successfully."
+            )
 
     def name(self) -> str:
 
-        return (
-            "multilingual-minilm-l12-v2"
-        )
-
-    # ========================================================
-    # GENERAL EMBEDDING
-    # ========================================================
+        return "multilingual-minilm-l12-v2"
 
     def __call__(self, input):
+
+        self._load_model()
 
         embeddings = self.model.encode(
             input,
@@ -54,22 +43,18 @@ class MultilingualEmbeddingFunction:
 
         return embeddings.tolist()
 
-    # ========================================================
-    # DOCUMENT EMBEDDINGS
-    # ========================================================
-
     def embed_documents(self, input):
+
+        self._load_model()
 
         return self.model.encode(
             input,
             normalize_embeddings=True
         ).tolist()
 
-    # ========================================================
-    # QUERY EMBEDDING
-    # ========================================================
-
     def embed_query(self, input):
+
+        self._load_model()
 
         return self.model.encode(
             [input],
@@ -77,10 +62,4 @@ class MultilingualEmbeddingFunction:
         )[0].tolist()
 
 
-# ============================================================
-# CREATE EMBEDDING FUNCTION
-# ============================================================
-
-embedding_function = (
-    MultilingualEmbeddingFunction()
-)
+embedding_function = MultilingualEmbeddingFunction()
